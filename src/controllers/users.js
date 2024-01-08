@@ -185,9 +185,10 @@ const borrowBook = async (req, res) => {
 
         // Update the user history
         const userHistory = req.user.getDataValue('history');
-        userHistory.push(bookId);
-        await Users.update({ history: userHistory }, { where: { id: req.user.id } });
-
+        if (!userHistory.includes(bookId)){
+            userHistory.push(bookId);
+            await Users.update({ history: userHistory }, { where: { id: req.user.id } });
+        }
         // update user reservatin if the book is in the reservation
         const reservatin = req.user.getDataValue('reservation')
         if (reservatin.includes(bookId)) {
@@ -199,7 +200,9 @@ const borrowBook = async (req, res) => {
 
         // update the book history
         const bookHistory = book.getDataValue('history');
-        bookHistory.push(userId);
+        if (!bookHistory.includes(userId)){
+            bookHistory.push(userId);
+        }
         await Books.update({ totalCopies: updatedCopies, history: bookHistory }, { where: { id: bookId } });
 
         res.send({ book, message: 'Book borrowed successfully!' });
