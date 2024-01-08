@@ -192,10 +192,14 @@ const borrowBook = async (req, res) => {
         // update user reservatin if the book is in the reservation
         const reservatin = req.user.getDataValue('reservation')
         if (reservatin.includes(bookId)) {
+            console.log('---------------')
+            console.log(reservatin)
             updatedReservation = reservatin.filter((bId) => {
                 return bId !== bookId
             })
-            await Users.update({ reservatin: updatedReservation }, { where: { id: req.user.id } });
+            console.log(updatedReservation)
+            console.log('---------------')
+            await Users.update({ reservation: updatedReservation }, { where: { id: req.user.id } });
         }
 
         // update the book history
